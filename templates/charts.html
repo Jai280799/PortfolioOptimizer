@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <br>
+    <h1 class="display-3">Prediction Results and Optimal Portfolio</h1>
+    <br>
+    <div class="buttonRow">
+        {% for t in tickerList %}
+            <button class="btn btn-dark" onclick="changeChart(this.value)" value="{{ t }}">{{ t }}</button>
+        {% endfor %}
+
+    </div>
+    <br><br>
+    <h1 class="display-5">3-Day Close Price Prediction for {{ currentStock }}</h1>
+    {% if currentPred %}
+        {{ currentPred | safe }}
+    {% else %}
+        <p>Unable to display graph</p>
+    {% endif %}
+    <br><br>
+    <h1 class="display-5">Sentiment Analysis for {{ currentStock }}</h1>
+    {% if currentSent %}
+        {{ currentSent | safe }}
+    {% else %}
+        <p>Unable to display graph</p>
+    {% endif %}
+    <br><br>
+    {% if finalizedList %}
+        <h1 class="display-5">Bullish Stocks Selected For Portfolio Building</h1>
+        <ul class="list-group">
+            {% for t in finalizedList %}
+                <li class="list-group-item text-white bg-dark">{{ t }}</li>
+            {% endfor %}
+        </ul>
+        <br><br>
+        <h1 class="display-5">Optimal Portfolio Details</h1>
+        {% if optimalPortfolio %}
+            {{ optimalPortfolio | safe }}
+        {% else %}
+            <p>Unable to display graph</p>
+        {% endif %}
+        <br>
+        <h1 class="display-5">Optimal Portfolio Returns: <span
+                class="text-white bg-dark">{{ optimalPortfolioReturn }}%</span></h1>
+        <br>
+        <h1 class="display-5">Optimal Portfolio Volatility: <span
+                class="text-white bg-dark">{{ optimalPortfolioVolatility }}%</span></h1>
+    {% else %}
+        <h1 class="display-5">No Bullish Stocks Identified For Portfolio Building</h1>
+    {% endif %}
+
+
+    <script>
+        function changeChart(ticker) {
+            window.location = "?ticker=" + ticker
+        }
+
+    </script>
+
+    <style>
+        .buttonRow {
+            width: 100%;
+            float: left;
+        }
+    </style>
+{% endblock %}
+
+
+

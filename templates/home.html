@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Hello World!</h1>
+    <br>
+    <h1 class="display-5">Please Choose Desired US Stocks For Portfolio Building: </h1>
+    <br>
+    <form method="POST" action="{% url 'charts' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 {% endblock %}
