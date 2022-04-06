@@ -1,4 +1,3 @@
-# %matplotlib inline
 import plotly
 import plotly.tools as tls
 import py as py

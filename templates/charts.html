@@ -18,6 +18,13 @@
         <p>Unable to display graph</p>
     {% endif %}
     <br><br>
+    <h1 class="display-5">Predicted Prices for {{ currentStock }}</h1>
+    {% if currentPrice %}
+        {{ currentPrice | safe }}
+    {% else %}
+        <p>Unable to display graph</p>
+    {% endif %}
+    <br><br>
     <h1 class="display-5">Sentiment Analysis for {{ currentStock }}</h1>
     {% if currentSent %}
         {{ currentSent | safe }}
@@ -62,6 +69,11 @@
             width: 100%;
             float: left;
         }
+
+        th {
+            text-align: left;
+        }
+
     </style>
 {% endblock %}
 

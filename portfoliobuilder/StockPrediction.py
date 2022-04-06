@@ -122,6 +122,7 @@ def getClosePricePrediction(ticker, data):
     # prepare dataframe to view the actual and predicted results for last 3 days
     compareDF = df_stockData.filter(['Close'])[train_size:]
     compareDF['Predicted'] = unscaled_pred
+    data["{}_price".format(ticker)] = compareDF.to_html(classes="table table-dark")
     print("Actual and predicted prices comparison")
     print(compareDF)
     # plot prediction and save graph
@@ -133,15 +134,15 @@ def getClosePricePrediction(ticker, data):
     plt.legend(['Training', 'Test (actual)', 'Predictions'], loc='lower right')
     prediction_graph = tls.mpl_to_plotly(prediction_graph)
     data["{}_pred".format(ticker)] = prediction_graph.to_html(full_html=False)
-    sorted_prediction = list(unscaled_pred)
-    sorted_prediction.sort()
+
     # Check for bullish prediction
-    if unscaled_pred[2] == sorted_prediction[2] and unscaled_pred[2] > df_stockData.iloc[train_size - 1:train_size,
-                                                                       3:4].values:
-        print("Bullish prediction for {}".format(ticker))
+    if unscaled_pred[0] < unscaled_pred[numFutureDays - 1] and unscaled_pred[numFutureDays - 1] > df_stockData.iloc[
+                                                                                                  train_size - 1:train_size,
+                                                                                                  3:4].values:
+        print("Bullish prediction for {} in 3-day close price prediction".format(ticker))
         return True
     else:
-        print("Bearish prediction for {}".format(ticker))
+        print("Bearish prediction for {} in 3-day close price prediction".format(ticker))
         return False
 
 

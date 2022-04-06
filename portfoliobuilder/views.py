@@ -18,35 +18,27 @@ def home(request):
 
 @never_cache
 def charts(request):
+    ticker = ""
     if request.method == 'POST':
         form = SecuritiesForm(request.POST)
         if form.is_valid():
             data = processStocks(list(form.cleaned_data.get("securities_field")))
-            firstTicker = data['tickerList'][0]
-            return render(request, 'charts.html', {
-                "tickerList": data["tickerList"],
-                "finalizedList": data["finalizedList"],
-                "currentStock": firstTicker,
-                "currentPred": data["{}_pred".format(firstTicker)],
-                "currentSent": data["{}_sent".format(firstTicker)],
-                "optimalPortfolio": data["optimalPortfolio"],
-                "optimalPortfolioReturn": data["optimalPortfolioReturn"],
-                "optimalPortfolioVolatility": data["optimalPortfolioVolatility"]})
+            ticker = data['tickerList'][0]
 
     if request.method == 'GET':
         ticker = request.GET.get('ticker', '')
         data = getData()
-        return render(request, 'charts.html', {
-            "tickerList": data["tickerList"],
-            "finalizedList": data["finalizedList"],
-            "currentStock": ticker,
-            "currentPred": data["{}_pred".format(ticker)],
-            "currentSent": data["{}_sent".format(ticker)],
-            "optimalPortfolio": data["optimalPortfolio"],
-            "optimalPortfolioReturn": data["optimalPortfolioReturn"],
-            "optimalPortfolioVolatility": data["optimalPortfolioVolatility"]})
 
-    return render(request, 'home.html', {'form': SecuritiesForm()})
+    return render(request, 'charts.html', {
+        "tickerList": data["tickerList"],
+        "finalizedList": data["finalizedList"],
+        "currentStock": ticker,
+        "currentPred": data["{}_pred".format(ticker)],
+        "currentSent": data["{}_sent".format(ticker)],
+        "currentPrice": data["{}_price".format(ticker)],
+        "optimalPortfolio": data["optimalPortfolio"],
+        "optimalPortfolioReturn": data["optimalPortfolioReturn"],
+        "optimalPortfolioVolatility": data["optimalPortfolioVolatility"]})
 
 
 def about(request):

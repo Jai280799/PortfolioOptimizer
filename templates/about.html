@@ -1,4 +1,56 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Welcome to the Portfolio Optimizer!</h1>
+    <br>
+    <h1 class="display-4">Welcome to the Portfolio Optimizer!</h1>
+    <br>
+    <p class="lead">
+        Participating in the financial markets is often associated with risk. The general public primarily employs the
+        services of asset management institutions who charge high management fees and fail to provide a customized
+        solution to their client’s needs. In order to encourage people to explore the markets themselves and make
+        informed investments, I have attempted to develop a sophisticated portfolio optimization system that predicts
+        the close prices of the next 3 days of US stocks and builds a customized portfolio using the bullish securities.
+    </p>
+
+    <p class="lead">
+        While there exist similar stock predicting systems, they tend to use the same set of features and parameters for
+        all stocks. During my intensive research I realized that each stock has its own unique momentum and
+        characteristic traits. The same set of features or learning conditions simply cannot accommodate the traits of
+        all stocks even if they belong to the same sector. Moreover, they do not incorporate the sentiment value
+        attached to each stock while making the prediction. In the modern age of technology, news travels at lightning
+        rates and this influences the trading decisions of several novice traders who do not possessive intensive
+        financial knowledge to study historical prices. Therefore, my primary aim was to setup such a system which can
+        provide a customized approach or solution for each stock and incorporate both historical prices and sentiment
+        scores in the decision-making process.
+    </p>
+
+    <p class="lead">
+        In my project, I first scrape the dataset for the selected stocks and build several technical indicators such as
+        Exponential Moving Average (EMA), Relative Strength Index (RSI) etc. The system then performs Recursive Feature
+        Elimination to extract only the important features that are relevant to the stock at hand. Over their lifetime,
+        stocks undergo changes in their momentum and behaviour and the close prices may become more responsive to other
+        features. Therefore, an important aspect of my project is that I perform RFE for the same stock repeatedly to
+        capture the important features that are most relevant during a particular time period. These features are then
+        further processed using Principal Component Analysis (PCA) and fed to deep learning models such as Long
+        Short-Term Memory (LSTM) model. The LSTM adjusts its learning rate in accordance with the stock data as stock
+        prices change by varying magnitudes. This customized training phase allows the LSTM weights to better adapt to
+        the stock data. The combination of RFE along with the learning rate reduction technique creates a customized
+        learning environment for each individual stock.
+    </p>
+
+    <p class="lead">
+        As an additional point of reference, I calculate sentiment scores for each stock by using standard sentiment
+        analysers on recent headlines. These sentiment scores help me predict those random price swings which simply
+        cannot be supported or explained by technical indicators or price history. This combination of price prediction
+        results and sentiment scores enables my system to withstand volatile market conditions to a great extent.
+    </p>
+
+    <p class="lead">
+        After studying the price prediction results and sentiment scores, I perform Markovitz Portfolio Optimization to
+        build a portfolio with highest Sharpe Ratio. This portfolio is able to deliver high returns for a particular
+        amount of risk when compared to other portfolios with similar risk.
+        Throughout my project I have attempted to create a customized environment for each stock and recognised each
+        stock’s individual characteristics and traits. While the financial markets still showcase events which cannot be
+        predicted, I made a sincere attempt to create an affordable, sophisticated, and customizable system for stock
+        prediction and portfolio optimization.
+    </p>
 {% endblock %}

@@ -49,8 +49,8 @@ def getSentimentAnalysis(ticker, data):
 
     # Check for positive sentiment to indicate it is bullish
     if average_daily_compound_scores.iloc[-1].values > 0.1:
-        print("Bullish Response = {} for {}".format(average_daily_compound_scores.iloc[-1], ticker))
+        print("Bullish Response for {} in Sentiment Analysis".format(ticker))
         return True
     else:
-        print("Bearish response for {}".format(ticker))
+        print("Bearish response for {} in Sentiment Analysis".format(ticker))
         return False
