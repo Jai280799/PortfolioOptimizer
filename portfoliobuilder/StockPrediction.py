@@ -2,37 +2,20 @@ import pandas as pd
 import pandas_datareader as pdr
 import numpy as np
 import tensorflow as tf
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.callbacks import ModelCheckpoint,ReduceLROnPlateau
 from tensorflow.keras.optimizers import Adam
 from sklearn.decomposition import PCA
-from tensorflow.keras.layers import LSTM, Dense, Dropout, Reshape
+from tensorflow.keras.layers import LSTM, Dense, Reshape
 from matplotlib import pyplot as plt
-from sklearn.feature_selection import RFE
-from sklearn.tree import DecisionTreeRegressor
 import pandas_ta as ta
-import talib
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-from chart_studio import plotly as py
 import plotly.tools as tls
-from plotly import figure_factory as FF
-from sklearn.svm import SVC
 from sklearn.feature_selection import RFECV
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import StratifiedKFold
-import pydot
-import graphviz
-import math
 from datetime import date
 from datetime import timedelta
 from tensorflow.python.keras.models import load_model
-import plotly.express as px
-from sklearn.metrics import mean_squared_error
-from tensorflow.keras.utils import plot_model
-from statistics import mean
 
 
 def getClosePricePrediction(ticker, data):
@@ -42,7 +25,7 @@ def getClosePricePrediction(ticker, data):
 
     # get data from yahoo finance for last 10 years
     df_stockData = pdr.DataReader(ticker, data_source='yahoo', start=str(date.today() - timedelta(days=365 * 10)),
-                                  end=str(date.today() - timedelta(days=1)))
+                                  end=str(date.today() - timedelta(days=365)))
     # Add indicators using pandas ta lib
     # add Exponential Moving Average (EMA) indicator
     df_stockData.ta.ema(close='Close', length=3, append=True)
@@ -66,7 +49,7 @@ def getClosePricePrediction(ticker, data):
     # Perform Recursive Feature Elimination to get important features for this stock data
     selected_features = performRFE(df_stockData)
     if len(selected_features) > 3:
-        selected_features = selected_features[:2]
+        selected_features = selected_features[:3]
     selected_features.append('Close')  # add back Close feature
 
     # Normalizing stock data
@@ -93,11 +76,11 @@ def getClosePricePrediction(ticker, data):
     # Build model
     model = Sequential()
     model.add(
-        LSTM(600, activation='tanh', recurrent_activation='sigmoid', input_shape=(x_train.shape[1], x_train.shape[2]),
+        LSTM(150, activation='tanh', recurrent_activation='sigmoid', input_shape=(x_train.shape[1], x_train.shape[2]),
              return_sequences=True))
-    model.add(LSTM(300, activation='tanh', recurrent_activation='sigmoid', return_sequences=False))
-    model.add(Dense(128))
-    model.add(Dense(64))
+    model.add(LSTM(100, activation='tanh', recurrent_activation='sigmoid', return_sequences=False))
+    # model.add(Dense(128))
+    model.add(Dense(32))
     model.add(Dense(y_train.shape[1]))
     model.add(Reshape((y_train.shape[1], y_train.shape[2])))
     model.compile(optimizer=Adam(learning_rate=0.001), loss='mse', metrics=[tf.keras.metrics.MeanSquaredError()])
@@ -107,9 +90,9 @@ def getClosePricePrediction(ticker, data):
                                  save_weights_only=False,
                                  mode='auto', period=1)
     # Use this callback to dynamically lower learning rate depending upon val_loss
-    lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=7, min_lr=0.00001, mode='auto')
+    lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.3, patience=5, min_lr=0.00001, mode='auto')
     # Train/fit the model using the data
-    history = model.fit(x_train, y_train, epochs=30, batch_size=5, validation_split=0.3, verbose=1,
+    history = model.fit(x_train, y_train, epochs=30, batch_size=7, validation_split=0.1, verbose=1,
                         callbacks=[checkpoint, lr_reducer])
     # load the best model which was saved
     model = load_model("model.h5")

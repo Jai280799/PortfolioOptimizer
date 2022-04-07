@@ -1,23 +1,12 @@
-import plotly
 import plotly.tools as tls
-import py as py
-from plotly.graph_objs import *
-import cufflinks
 import numpy as np
 import matplotlib.pyplot as plt
-import cvxopt as opt
-from cvxopt import blas, solvers
 import pandas_datareader as pdr
 import pandas_ta as ta
 import pandas as pd
-from chart_studio import plotly as py
 import plotly.express as px
 from datetime import date
 from datetime import timedelta
-import chart_studio
-
-chart_studio.tools.set_credentials_file(username='jai2899', api_key='Sd3nFkIiKjS24iqA6lV9')
-
 
 def getWeightVector(n):
     weights = np.random.random(n)
