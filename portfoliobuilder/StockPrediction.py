@@ -25,7 +25,7 @@ def getClosePricePrediction(ticker, data):
 
     # get data from yahoo finance for last 10 years
     df_stockData = pdr.DataReader(ticker, data_source='yahoo', start=str(date.today() - timedelta(days=365 * 10)),
-                                  end=str(date.today() - timedelta(days=365)))
+                                  end=str(date.today() - timedelta(days=1)))
     # Add indicators using pandas ta lib
     # add Exponential Moving Average (EMA) indicator
     df_stockData.ta.ema(close='Close', length=3, append=True)
@@ -48,8 +48,8 @@ def getClosePricePrediction(ticker, data):
 
     # Perform Recursive Feature Elimination to get important features for this stock data
     selected_features = performRFE(df_stockData)
-    if len(selected_features) > 3:
-        selected_features = selected_features[:3]
+    if len(selected_features) > 2:
+        selected_features = selected_features[:2]
     selected_features.append('Close')  # add back Close feature
 
     # Normalizing stock data
@@ -76,11 +76,10 @@ def getClosePricePrediction(ticker, data):
     # Build model
     model = Sequential()
     model.add(
-        LSTM(150, activation='tanh', recurrent_activation='sigmoid', input_shape=(x_train.shape[1], x_train.shape[2]),
+        LSTM(200, activation='tanh', recurrent_activation='sigmoid', input_shape=(x_train.shape[1], x_train.shape[2]),
              return_sequences=True))
     model.add(LSTM(100, activation='tanh', recurrent_activation='sigmoid', return_sequences=False))
-    # model.add(Dense(128))
-    model.add(Dense(32))
+    model.add(Dense(50))
     model.add(Dense(y_train.shape[1]))
     model.add(Reshape((y_train.shape[1], y_train.shape[2])))
     model.compile(optimizer=Adam(learning_rate=0.001), loss='mse', metrics=[tf.keras.metrics.MeanSquaredError()])
@@ -90,9 +89,9 @@ def getClosePricePrediction(ticker, data):
                                  save_weights_only=False,
                                  mode='auto', period=1)
     # Use this callback to dynamically lower learning rate depending upon val_loss
-    lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.3, patience=5, min_lr=0.00001, mode='auto')
+    lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.00001, mode='auto')
     # Train/fit the model using the data
-    history = model.fit(x_train, y_train, epochs=30, batch_size=7, validation_split=0.1, verbose=1,
+    history = model.fit(x_train, y_train, epochs=30, batch_size=5, validation_split=0.2, verbose=1,
                         callbacks=[checkpoint, lr_reducer])
     # load the best model which was saved
     model = load_model("model.h5")

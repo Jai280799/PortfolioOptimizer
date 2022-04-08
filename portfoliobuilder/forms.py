@@ -1,6 +1,8 @@
 from django import forms
 
 SECURITIES_CHOICES = (
+    ("MMM", "3M"),
+    ("JNJ", "Johnson & Johnson"),
     ("INFY", "Infosys"),
     ("DIS", "Walt Disney"),
     ("GOOGL", "Google"),
